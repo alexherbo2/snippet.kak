@@ -54,7 +54,7 @@ define-command ▌ %{X}
 ```
 
 Leaving you the insert of the command name.
-You can then press `n` to fill the command implementation.
+You can then press <kbd>n</kbd> to fill the command implementation.
 
 ## Commands
 
