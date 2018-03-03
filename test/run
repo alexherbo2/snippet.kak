@@ -1,0 +1,24 @@
+#!/bin/sh
+
+root=$(git rev-parse --show-toplevel)
+name=$(basename $root .kak)
+
+kak=$(realpath $(which kak))
+
+cd $(dirname $kak)
+
+kakoune=$(git rev-parse --show-toplevel)
+
+[ $? = 0 ] || {
+  echo Kakoune binary is not in a Git repository > /dev/stderr
+  exit 1
+}
+
+cp --recursive $root/rc $kakoune/rc/$name
+cp --recursive $root/test $kakoune/test/$name
+
+cd $kakoune/test
+
+./run $name
+
+rm --force --recursive $kakoune/{rc,test}/$name

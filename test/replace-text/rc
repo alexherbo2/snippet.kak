@@ -1,0 +1,5 @@
+source "%val{runtime}/rc/snippets/snippets.kak"
+set-option global snippets %{{
+  "->": "→"
+}}
+snippets-enable
