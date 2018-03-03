@@ -37,6 +37,17 @@ hook global WinSetOption filetype=kak %{
 }
 ```
 
+This settings enables to expand [Kakoune][] code.
+By typing `def` and validating with <kbd>Return</kbd>,
+the snippets will expand to:
+
+``` kak
+define-command ▌ %{X}
+```
+
+Leaving you the insert of the command name.
+You can then press `n` to fill the command implementation.
+
 ### Activation
 
 ``` kak
