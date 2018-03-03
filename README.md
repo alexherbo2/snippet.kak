@@ -19,6 +19,14 @@ ln --symbolic $PWD/rc $XDG_CONFIG_HOME/kak/autoload/snippets
 
 ## Usage
 
+### Activation
+
+``` kak
+hook global WinCreate .* %{
+  snippets-enable
+}
+```
+
 ### Global settings
 
 ``` kak
@@ -47,14 +55,6 @@ define-command ▌ %{X}
 
 Leaving you the insert of the command name.
 You can then press `n` to fill the command implementation.
-
-### Activation
-
-``` kak
-hook global WinCreate .* %{
-  snippets-enable
-}
-```
 
 ## Commands
 
