@@ -48,7 +48,7 @@ hook global WinSetOption filetype=kak %{
 ```
 
 This settings enables to expand [Kakoune][] code.
-By typing `def` and validating with <kbd>Return</kbd>,
+By inserting `def` and validating with <kbd>Return</kbd>,
 the snippets will expand to:
 
 ``` kak
