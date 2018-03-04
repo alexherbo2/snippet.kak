@@ -9,7 +9,7 @@ define-command snippets-enable -docstring 'Enable snippets' %{
         set-register k \(.key)
         set-register v \(.value)
         try %{
-          execute-keys -draft \"\(.key | length)H<a-;>H<a-k>\\A%reg(k)\\z<ret>c<del>\"
+          execute-keys -draft \"\(.key | length)H<a-;>H<a-k>\\A\\Q%reg(k)\\E\\z<ret>c<del>\"
           execute-keys -client %val(client) -save-regs %[] %reg(v)
         }
       "'
