@@ -6,6 +6,8 @@
 ###### [Usage](#usage) | [Documentation](#commands) | [Contributing](CONTRIBUTING)
 
 > [Kakoune][] extension to expand snippets when validating with <kbd>Return</kbd>.
+> No magic, no predefined snippets.
+> A snippets expansion is as you would type it interactively.
 
 ## Dependencies
 
