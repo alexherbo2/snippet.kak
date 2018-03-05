@@ -5,7 +5,7 @@ define-command snippets-enable -docstring 'Enable snippets' %{
   hook window InsertChar \n -group snippets %{ evaluate-commands -draft -save-regs '' %{
     execute-keys h
     %sh{
-      echo "$kak_opt_snippets" | jq --raw-output 'to_entries | .[] | @sh "
+      echo "$kak_opt_snippets" | jq --raw-output 'to_entries | .[] | @json "
         set-register k \(.key)
         set-register v \(.value)
         try %{
