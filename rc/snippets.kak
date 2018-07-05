@@ -4,7 +4,7 @@ declare-option -docstring 'Information about the way snippets are active' bool s
 define-command snippets-enable -docstring 'Enable snippets' %{
   hook window InsertChar \n -group snippets %{ evaluate-commands -draft -save-regs '' %{
     execute-keys h
-    %sh{
+    evaluate-commands %sh{
       echo "$kak_opt_snippets" | jq --raw-output 'to_entries | .[] | @json "
         set-register k \(.key)
         set-register v \(.value)
@@ -22,7 +22,7 @@ define-command snippets-disable -docstring 'Disable snippets' %{
   set-option window snippets_enabled no
 }
 
-define-command snippets-toggle -docstring 'Toggle snippets' %{ %sh{
+define-command snippets-toggle -docstring 'Toggle snippets' %{ evaluate-commands %sh{
   if [ "$kak_opt_snippets_enabled" = true ]; then
     echo snippets-disable
   else
