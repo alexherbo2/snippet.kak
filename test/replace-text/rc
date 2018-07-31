@@ -1,4 +1,4 @@
-source "%val{runtime}/rc/snippets/snippets.kak"
+source "%val(runtime)/rc/snippets/snippets.kak"
 set-option global snippets %{{
   "->": "→"
 }}
