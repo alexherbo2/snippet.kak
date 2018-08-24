@@ -5,13 +5,13 @@
 
 ###### [Usage](#usage) | [Documentation](#commands) | [Contributing](CONTRIBUTING)
 
-> [Kakoune][] extension to expand snippets when validating with <kbd>Return</kbd>.  
-> No magic, no predefined snippets, and in [JSON][].  
+> [Kakoune] extension to expand snippets when validating with <kbd>Return</kbd>.  
+> No magic, no predefined snippets, and in [JSON].  
 > A snippets expansion is as you would type it interactively.  
 
 ## Dependencies
 
-- [jq][]
+- [jq]
 
 ## Installation
 
@@ -47,7 +47,7 @@ hook global WinSetOption filetype=kak %{
 }
 ```
 
-This settings enables to expand [Kakoune][] code.
+This settings enables to expand [Kakoune] code.
 By inserting `def` and validating with <kbd>Return</kbd>,
 the snippets will expand to:
 
@@ -66,12 +66,12 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 
 ## Options
 
-- `snippets` `str`: [JSON][]-formatted string of snippets (Default: `{}`)
+- `snippets` `str`: [JSON]-formatted string of snippets (Default: `{}`)
 - `snippets_enabled` `bool`: Information about the way snippets are active (Read-only)
 
 ## Credits
 
-Initial implementation by [danr][].
+Initial implementation by [danr].
 
 [Kakoune]: http://kakoune.org
 [Travis]: https://travis-ci.org/alexherbo2/snippets.kak
