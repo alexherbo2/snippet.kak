@@ -6,12 +6,8 @@
 ###### [Usage](#usage) | [Documentation](#commands) | [Contributing](CONTRIBUTING)
 
 > [Kakoune] extension to expand snippets when validating with <kbd>Return</kbd>.  
-> No magic, no predefined snippets, and in [JSON].  
+> No magic, no predefined snippets.  
 > A snippets expansion is as you would type it interactively.  
-
-## Dependencies
-
-- [jq]
 
 ## Installation
 
@@ -32,18 +28,15 @@ hook global WinCreate .* %{
 ### Global settings
 
 ``` kak
-set-option global snippets %{{
-  "->": "→"
-}}
+set-option global snippets -> →
 ```
 
 ### Per file-type settings
 
 ``` kak
 hook global WinSetOption filetype=kak %{
-  set-option buffer snippets %{{
-    "def": "define-command X %{X}<esc><a-/>X<ret><a-n>c"
-  }}
+  set-option -add buffer snippets \
+    def 'define-command X %{X}<esc><a-/>X<ret><a-n>c'
 }
 ```
 
@@ -66,7 +59,7 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 
 ## Options
 
-- `snippets` `str`: [JSON]-formatted string of snippets (Default: `{}`)
+- `snippets` `str-list`: List of – `{key} {value}` – snippets (Default: Empty)
 - `snippets_enabled` `bool`: Information about the way snippets are active (Read-only)
 
 ## Credits
@@ -78,6 +71,4 @@ Initial implementation by [danr].
 [Badge]: https://travis-ci.org/alexherbo2/snippets.kak.svg
 [IRC]: https://webchat.freenode.net?channels=kakoune
 [IRC Badge]: https://img.shields.io/badge/IRC-%23kakoune-blue.svg
-[jq]: https://stedolan.github.io/jq/
-[JSON]: https://json.org
 [danr]: https://github.com/danr
