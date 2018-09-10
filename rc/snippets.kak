@@ -2,7 +2,7 @@ declare-option -docstring 'List of – {key} {value} – snippets' str-list snip
 declare-option -docstring 'Information about the way snippets are active' bool snippets_enabled no
 
 define-command snippets-enable -docstring 'Enable snippets' %{
-  hook window InsertChar \n -group snippets %{ evaluate-commands -draft -save-regs '' %{
+  hook window InsertChar \n -group snippets %{ evaluate-commands -draft %{
     execute-keys h
     evaluate-commands %sh{
       eval "set -- $kak_opt_snippets"
@@ -11,11 +11,9 @@ define-command snippets-enable -docstring 'Enable snippets' %{
         value=$2
         shift 2
         echo "
-          set-register k '$key'
-          set-register v '$value'
           try %{
-            execute-keys -draft \"${#key}H<a-;>H<a-k>\A\Q%reg(k)\E\z<ret>c<del>\"
-            execute-keys -client %val(client) -save-regs '' %reg(v)
+            execute-keys -draft %(${#key}H<a-;>H<a-k>\A\Q$key\E\z<ret>c<del>)
+            execute-keys -client %val(client) -save-regs '' %($value)
           }
         "
       done
