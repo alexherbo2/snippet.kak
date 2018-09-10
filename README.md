@@ -58,7 +58,7 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 
 ## Options
 
-- `snippets` `str-list`: List of – `{key} {value}` – snippets (Default: Empty)
+- `snippets` `str-list`: List of – `{snippet} {expansion}` – snippets (Default: Empty)
 - `snippets_enabled` `bool`: Information about the way snippets are active (Read-only)
 
 ## Credits
