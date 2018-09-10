@@ -7,7 +7,7 @@
 
 > [Kakoune] extension to expand snippets when validating with <kbd>Return</kbd>.  
 > No magic, no predefined snippets.  
-> A snippets expansion is as you would type it interactively.  
+> A snippet expansion is as you would type it interactively.  
 
 ## Installation
 
@@ -42,7 +42,7 @@ hook global WinSetOption filetype=kak %{
 
 This settings enables to expand [Kakoune] code.
 By inserting `def` and validating with <kbd>Return</kbd>,
-the snippets will expand to:
+the snippet will expand to:
 
 ``` kak
 define-command ▌ %{X}
