@@ -1,4 +1,4 @@
-declare-option -docstring 'List of – {key} {value} – snippets' str-list snippets
+declare-option -docstring 'List of – {snippet} {expansion} – snippets' str-list snippets
 declare-option -docstring 'Information about the way snippets are active' bool snippets_enabled no
 
 define-command snippets-enable -docstring 'Enable snippets' %{
@@ -7,13 +7,13 @@ define-command snippets-enable -docstring 'Enable snippets' %{
     evaluate-commands %sh{
       eval "set -- $kak_opt_snippets"
       while test $# -ge 2; do
-        key=$1
-        value=$2
+        snippet=$1
+        expansion=$2
         shift 2
         echo "
           try %{
-            execute-keys -draft %(${#key}H<a-;>H<a-k>\A\Q$key\E\z<ret>c<del>)
-            execute-keys -client %val(client) -save-regs '' %($value)
+            execute-keys -draft %(${#snippet}H<a-;>H<a-k>\A\Q$snippet\E\z<ret>c<del>)
+            execute-keys -client %val(client) -save-regs '' %($expansion)
           }
         "
       done
