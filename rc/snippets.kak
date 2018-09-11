@@ -13,7 +13,7 @@ define-command snippets-enable -docstring 'Enable snippets' %{
         echo "
           try %{
             execute-keys -draft %(${#snippet}H<a-;>H<a-k>\A\Q$snippet\E\z<ret>c<del>)
-            execute-keys -client %val(client) -save-regs '' %($expansion)
+            execute-keys -client %val(client) -with-hooks -save-regs '' %($expansion)
           }
         "
       done
