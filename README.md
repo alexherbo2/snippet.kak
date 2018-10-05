@@ -11,8 +11,10 @@
 
 ## Installation
 
-``` sh
-ln --symbolic $PWD/rc $XDG_CONFIG_HOME/kak/autoload/snippets
+### [Pathogen]
+
+``` kak
+pathogen-infect /home/user/repositories/github.com/alexherbo2/snippets.kak
 ```
 
 ## Usage
@@ -70,4 +72,5 @@ Initial implementation by [danr].
 [Badge]: https://travis-ci.org/alexherbo2/snippets.kak.svg
 [IRC]: https://webchat.freenode.net?channels=kakoune
 [IRC Badge]: https://img.shields.io/badge/IRC-%23kakoune-blue.svg
+[Pathogen]: https://github.com/alexherbo2/pathogen.kak
 [danr]: https://github.com/danr
