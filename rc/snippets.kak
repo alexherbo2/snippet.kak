@@ -12,10 +12,13 @@ define-command snippets-enable -docstring 'Enable snippets' %{
         shift 2
         printf '
           try %%{
-            execute-keys -draft %%(%dH<a-;>H<a-k>\\A\\Q%s\\E\\z<ret>c<del>)
+            evaluate-commands -draft %%{
+              set-register / %%(\\A\\Q%s\\E\\z)
+              execute-keys "%dH<a-;>H<a-k><ret>c<del>"
+            }
             execute-keys -client %%val(client) -with-hooks -save-regs "" %%(%s)
           }
-        ' ${#snippet} "$snippet" "$expansion"
+        ' "$snippet" ${#snippet} "$expansion"
       done
     }
   }}
