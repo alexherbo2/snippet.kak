@@ -12,7 +12,7 @@ define-command snippets-enable -docstring 'Enable snippets' %{
         shift 2
         printf '
           try %%{
-            evaluate-commands -draft %%{
+            evaluate-commands -draft -save-regs "/" %%{
               set-register / %%(\\A\\Q%s\\E\\z)
               execute-keys "%dH<a-;>H<a-k><ret>c<del>"
             }
