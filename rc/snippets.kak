@@ -22,6 +22,8 @@ define-command snippets-enable -docstring 'Enable snippets' %{
       done
     }
   }}
+
+  set-option window snippets_enabled yes
 }
 
 define-command snippets-disable -docstring 'Disable snippets' %{
