@@ -67,7 +67,7 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 
 Initial implementation by [danr].
 
-[Kakoune]: http://kakoune.org
+[Kakoune]: https://kakoune.org
 [Travis]: https://travis-ci.org/alexherbo2/snippets.kak
 [Badge]: https://travis-ci.org/alexherbo2/snippets.kak.svg
 [IRC]: https://webchat.freenode.net?channels=kakoune
