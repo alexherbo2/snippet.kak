@@ -14,11 +14,11 @@ kakoune=$(git rev-parse --show-toplevel)
   exit 1
 }
 
-cp --recursive $root/rc $kakoune/rc/$name
-cp --recursive $root/test $kakoune/test/$name
+cp -R $root/rc $kakoune/rc/$name
+cp -R $root/test $kakoune/test/$name
 
 cd $kakoune/test
 
 ./run $name
 
-rm --force --recursive $kakoune/{rc,test}/$name
+rm -Rf $kakoune/{rc,test}/$name
