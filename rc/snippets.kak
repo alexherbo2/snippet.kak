@@ -5,7 +5,7 @@ define-command snippets-enable -docstring 'Enable snippets' %{
   hook window InsertChar \n -group snippets %{ evaluate-commands -draft %{
     execute-keys h
     evaluate-commands %sh{
-      eval "set -- $kak_opt_snippets"
+      eval "set -- $kak_quoted_opt_snippets"
       while test $# -ge 2; do
         snippet=$1
         expansion=$2
