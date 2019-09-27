@@ -70,7 +70,7 @@ Initial implementation by [danr].
 [Kakoune]: https://kakoune.org
 [Travis]: https://travis-ci.org/alexherbo2/snippets.kak
 [Badge]: https://travis-ci.org/alexherbo2/snippets.kak.svg
-[IRC]: https://webchat.freenode.net?channels=kakoune
+[IRC]: https://webchat.freenode.net/#kakoune
 [IRC Badge]: https://img.shields.io/badge/IRC-%23kakoune-blue.svg
 [Pathogen]: https://github.com/alexherbo2/pathogen.kak
 [danr]: https://github.com/danr
