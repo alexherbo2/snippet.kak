@@ -52,6 +52,43 @@ define-command ▌ %{X}
 Leaving you the insert of the command name.
 You can then press <kbd>n</kbd> to fill the command implementation.
 
+### Snippets from file using [Crystal]
+
+``` yaml
+File: ~/.config/snippets.yml
+```
+
+``` kak
+evaluate-commands %sh{
+  cat <<'EOF' | crystal eval
+    require "yaml"
+    class String
+      def shell_escape
+        "'" + self.gsub("'", %('"'"')) + "'"
+      end
+    end
+    yaml = File.open(File.join(ENV["XDG_CONFIG_HOME"], "snippets.yml")) do |file|
+      Hash(String, String).from_yaml(file)
+    end
+    yaml.each do |snippet, expansion|
+      puts "
+        set-option -add global snippets #{snippet.shell_escape} #{expansion.shell_escape}
+        set-option -add global static_words #{snippet.shell_escape}
+      "
+    end
+EOF
+}
+```
+
+**Example**
+
+`~/.config/snippets.yml`
+
+``` yaml
+cat: 🐈
+crab: 🦀
+```
+
 ## Commands
 
 - `snippets-enable`: Enable snippets
@@ -68,6 +105,7 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 Initial implementation by [danr].
 
 [Kakoune]: https://kakoune.org
+[Crystal]: https://crystal-lang.org
 [Travis]: https://travis-ci.org/alexherbo2/snippets.kak
 [Badge]: https://travis-ci.org/alexherbo2/snippets.kak.svg
 [IRC]: https://webchat.freenode.net/#kakoune
