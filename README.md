@@ -54,29 +54,49 @@ You can then press <kbd>n</kbd> to fill the command implementation.
 
 ### Snippets from file using [Crystal]
 
+Generate snippets on-demand using `snippets-generate-config` and `snippets-source-config`.
+
 ``` yaml
 File: ~/.config/snippets.yml
 ```
 
 ``` kak
-evaluate-commands %sh{
-  cat <<'EOF' | crystal eval
-    require "yaml"
-    class String
-      def shell_escape
-        "'" + self.gsub("'", %('"'"')) + "'"
+hook global KakBegin .* %{
+  snippets-source-config
+}
+
+define-command snippets-source-config %{
+  try %{
+    source "%val(client_env_XDG_CACHE_HOME)/kak/snippets.kak"
+  }
+}
+
+define-command snippets-generate-config %{
+  # Ensure ~/.cache/kak exists
+  nop %sh{
+    mkdir -p "$XDG_CACHE_HOME/kak"
+  }
+  # Snippets from file using Crystal
+  # File: ~/.config/snippets.yml
+  echo -to-file "%val(client_env_XDG_CACHE_HOME)/kak/snippets.kak" %sh{
+    cat <<'EOF' | crystal eval
+      require "yaml"
+      class String
+        def shell_escape
+          "'" + self.gsub("'", %('"'"')) + "'"
+        end
       end
-    end
-    yaml = File.open(File.join(ENV["XDG_CONFIG_HOME"], "snippets.yml")) do |file|
-      Hash(String, String).from_yaml(file)
-    end
-    yaml.each do |snippet, expansion|
-      puts "
-        set-option -add global snippets #{snippet.shell_escape} #{expansion.shell_escape}
-        set-option -add global static_words #{snippet.shell_escape}
-      "
-    end
+      yaml = File.open(File.join(ENV["XDG_CONFIG_HOME"], "snippets.yml")) do |file|
+        Hash(String, String).from_yaml(file)
+      end
+      yaml.each do |snippet, expansion|
+        puts "
+          set-option -add global snippets #{snippet.shell_escape} #{expansion.shell_escape}
+          set-option -add global static_words #{snippet.shell_escape}
+        "
+      end
 EOF
+  }
 }
 ```
 
