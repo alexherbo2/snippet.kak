@@ -1,0 +1,3 @@
+enum {name}
+	{body}
+end

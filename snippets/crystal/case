@@ -1,0 +1,4 @@
+case {object}
+when {condition}
+	{body}
+end

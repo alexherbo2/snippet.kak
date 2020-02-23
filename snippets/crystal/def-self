@@ -1,0 +1,3 @@
+def self.{name}
+	{body}
+end
