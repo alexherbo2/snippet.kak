@@ -177,9 +177,13 @@ provide-module snippets %{
   # The command is executed from a mapping in insert mode.
   # We reuse the mark and search registers set by snippets-paste.
   define-command -hidden snippets-select-placeholder -params 1 %{
-    execute-keys '<a-;>z'
-    evaluate-commands -itersel %{
-      execute-keys "<a-;>s<ret><a-;>%arg{1}<a-;><space><a-;>d"
+    try %{
+      # Test if saved regions contain a placeholder before modifying selections
+      execute-keys -draft 'z<a-k><ret>'
+      execute-keys '<a-;>z'
+      evaluate-commands -itersel %{
+        execute-keys "<a-;>s<ret><a-;>%arg{1}<a-;><space><a-;>d"
+      }
     }
   }
 
