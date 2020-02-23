@@ -1,0 +1,3 @@
+<form class="{name}" action="{action}" method="{method}">
+	{body}
+</form>

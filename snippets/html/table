@@ -1,0 +1,8 @@
+<table>
+	<tr>
+		<th>{header}</th>
+	</tr>
+	<tr>
+		<td>{body}</td>
+	</tr>
+</table>
