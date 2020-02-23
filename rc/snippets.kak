@@ -23,6 +23,8 @@ provide-module snippets %{
   # Save registers
   declare-option -hidden str-list snippets_mark_register
   declare-option -hidden str-list snippets_search_register
+  # Determines whether snippets are active
+  declare-option -hidden bool snippets_active
 
   # Commands ───────────────────────────────────────────────────────────────────
 
@@ -122,23 +124,45 @@ provide-module snippets %{
       # Paste using the specified method
       snippets-paste-text %arg{1} %reg{"}
     }
-    # Save registers
-    set-option window snippets_mark_register %reg{^}
-    set-option window snippets_search_register %reg{/}
-    execute-keys -save-regs '' 'Z'
-    set-register / %opt{snippets_placeholder}
+    # Once activated, snippets are active until all placeholders have been consumed.
+    try %{
+      evaluate-commands %sh{
+        if test "$kak_opt_snippets_active" = true; then
+          printf fail
+        fi
+      }
+      set-option window snippets_active true
+      # Save registers
+      set-option window snippets_mark_register %reg{^}
+      set-option window snippets_search_register %reg{/}
+      # Save regions and set the search register for selecting placeholders
+      execute-keys -save-regs '' Z
+      set-register / %opt{snippets_placeholder}
+      # Mappings for the whole insert session
+      map window insert <a-n> '<a-;>: snippets-select-next-placeholder<ret>' -docstring 'Select the next placeholder'
+      map window insert <a-p> '<a-;>: snippets-select-previous-placeholder<ret>' -docstring 'Select the previous placeholder'
+      # Deactivate when no placeholder remains in saved regions.
+      # Test when leaving insert mode.
+      hook -group snippets-active window ModeChange pop:insert:normal %{
+        try %{
+          # Test if a placeholder matches in saved regions
+          execute-keys -draft 'z<a-k><ret>'
+        } catch %{
+          # If not:
+          # Restore registers
+          set-register ^ %opt{snippets_mark_register}
+          set-register / %opt{snippets_search_register}
+          # Unmap
+          unmap window insert <a-n>
+          unmap window insert <a-p>
+          # Deactivate
+          unset-option window snippets_active
+          remove-hooks window snippets-active
+        }
+      }
+    }
     # Reduce selections to their cursor
     execute-keys ';'
-    # Mappings for the whole insert session
-    map window insert <a-n> '<a-;>: snippets-select-next-placeholder<ret>' -docstring 'Select the next placeholder'
-    map window insert <a-p> '<a-;>: snippets-select-previous-placeholder<ret>' -docstring 'Select the previous placeholder'
-    # Restore registers and unmap when leaving insert mode
-    hook -always -once window ModeChange pop:insert:normal %{
-      set-register ^ %opt{snippets_mark_register}
-      set-register / %opt{snippets_search_register}
-      unmap window insert <a-n>
-      unmap window insert <a-p>
-    }
   }
 
   define-command -hidden snippets-select-next-placeholder %{
