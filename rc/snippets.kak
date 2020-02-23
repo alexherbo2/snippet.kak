@@ -19,7 +19,7 @@ provide-module snippets %{
   # def {name}
   # 	{body}
   # end
-  declare-option -docstring 'Regex to select snippet placeholders' str snippets_placeholder '\{\w*\}'
+  declare-option -docstring 'Regex to select snippet placeholders' str snippets_placeholder '\{[\w-]*\}'
   # Save registers
   declare-option -hidden str-list snippets_mark_register
   declare-option -hidden str-list snippets_search_register

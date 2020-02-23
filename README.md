@@ -26,7 +26,7 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 ## Options
 
 - `snippets_directories`: List of snippets directories.  Default: `~/.config/kak/snippets` `/path/to/snippets.kak/snippets`.
-- `snippets_placeholder`: Regex to select snippet placeholders.  Default: `\{\w*\}`.
+- `snippets_placeholder`: Regex to select snippet placeholders.  Default: `\{[\w-]*\}`.
 
 [Kakoune]: https://kakoune.org
 [type-expand.kak]: https://github.com/alexherbo2/type-expand.kak
