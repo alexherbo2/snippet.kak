@@ -1,0 +1,5 @@
+try {
+	{body}
+} catch ({exception}) {
+	{body}
+}

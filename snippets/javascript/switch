@@ -1,0 +1,7 @@
+switch ({expression}) {
+	case {value}:
+		{body}
+		break
+	default:
+		{body}
+}

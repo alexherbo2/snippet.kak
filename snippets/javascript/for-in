@@ -1,0 +1,3 @@
+for ({variable} in {object}) {
+	{body}
+}
