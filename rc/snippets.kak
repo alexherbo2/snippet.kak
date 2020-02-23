@@ -129,7 +129,7 @@ provide-module snippets %{
     set-register / %opt{snippets_placeholder}
     # Reduce selections to their cursor
     execute-keys ';'
-    # Mappings
+    # Mappings for the whole insert session
     map window insert <a-n> '<a-;>: snippets-select-next-placeholder<ret>' -docstring 'Select the next placeholder'
     map window insert <a-p> '<a-;>: snippets-select-previous-placeholder<ret>' -docstring 'Select the previous placeholder'
     # Restore registers and unmap when leaving insert mode
