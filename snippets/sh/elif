@@ -1,0 +1,2 @@
+elif test {condition}; then
+	{body}

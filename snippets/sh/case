@@ -1,0 +1,8 @@
+case "{word}" in
+	{pattern})
+		{body}
+		;;
+	*)
+		{body}
+		;;
+esac
