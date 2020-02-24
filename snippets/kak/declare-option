@@ -1,0 +1,1 @@
+declare-option -docstring '{desc}' {type} {name}

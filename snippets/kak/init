@@ -1,0 +1,13 @@
+hook global ModuleLoaded PLUGIN %{
+	PLUGIN-enable
+}
+
+provide-module PLUGIN %{
+	declare-option -docstring 'DOCSTRING' TYPE PLUGIN_OPTION_NAME
+	declare-option -hidden TYPE PLUGIN_OPTION_NAME
+	define-command PLUGIN -params PARAMS -COMMAND-COMPLETION -docstring 'DOCSTRING' %{
+		IMPLEMENTATION{}
+	}
+}
+
+require-module PLUGIN
