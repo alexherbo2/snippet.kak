@@ -1,1 +1,1 @@
-<textarea name="{name}" id="{id}">{body}</textarea>
+<textarea name="{name}" id="{id}" rows="{8}" cols="{40}">{body}</textarea>
