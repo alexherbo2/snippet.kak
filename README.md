@@ -8,6 +8,7 @@ Snippets for [Kakoune].
 - [type-expand.kak]
 
 [prelude.kak]: https://github.com/alexherbo2/prelude.kak
+[type-expand.kak]: https://github.com/alexherbo2/type-expand.kak
 
 ## Installation
 
@@ -32,4 +33,3 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 - `snippets_placeholder`: Regex to select snippet placeholders.  Default: `\{[\w-]*\}`.
 
 [Kakoune]: https://kakoune.org
-[type-expand.kak]: https://github.com/alexherbo2/type-expand.kak
