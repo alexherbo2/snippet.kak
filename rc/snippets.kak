@@ -42,8 +42,7 @@ provide-module snippets %{
 
   define-command snippets-list -docstring 'Visualize snippets in a scratch buffer' %{
     evaluate-commands %sh{
-      # Add a kak_escape function to the prelude of shell blocks
-      . "$kak_opt_snippets_plugin_path/prelude.sh"
+      . "$kak_opt_prelude"
       # Create a fifo
       state=$(mktemp -d)
       fifo=$state/fifo
