@@ -96,27 +96,27 @@ provide-module snippets %{
   define-command -hidden snippets-paste -params 2 %{
     evaluate-commands -save-regs '"' %{
       # Search the given snippet %arg{2} in snippets directories:
-      # First pass:
       # – <snippets-directories>/<filetype>/<name>
-      # Second pass:
+      # – <snippets-directories>/<filetype>/<subset>/<name>
       # – <snippets-directories>/global/<name>
+      # – <snippets-directories>/global/<subset>/<name>
       evaluate-commands %sh{
-        search_snippet() {
-          path=$1
-          eval "set -- $kak_quoted_opt_snippets_directories"
-          for directory do
-            snippet_path=$directory/$path
+        paste_method=$1
+        snippet_name=$2
+        eval "set -- $kak_quoted_opt_snippets_directories"
+        for directory do
+          set -- \
+            "$directory/$kak_opt_filetype/$snippet_name" \
+            "$directory/$kak_opt_filetype/"*"/$snippet_name" \
+            "$directory/global/$snippet_name" \
+            "$directory/global/"*"/$snippet_name"
+          for snippet_path do
             if test -f "$snippet_path"; then
               printf 'set-register dquote %%file{%s}' "$snippet_path"
               exit
             fi
           done
-        }
-        snippet_name=$2
-        # First pass:
-        search_snippet "$kak_opt_filetype/$snippet_name"
-        # Second pass:
-        search_snippet "global/$snippet_name"
+        done
         # Abort if no snippet
         printf 'fail No such snippet: "%%opt{filetype}/%%arg{2}" "global/%%arg{2}" in %%opt{snippets_directories}'
       }
