@@ -1,0 +1,3 @@
+<% {collection}.each do |{item}| %>
+	{body}
+<% end %>
