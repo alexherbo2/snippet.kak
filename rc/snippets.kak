@@ -9,6 +9,10 @@ hook global ModuleLoaded snippets %{
 
 provide-module snippets %{
 
+  # Modules ────────────────────────────────────────────────────────────────────
+
+  require-module prelude
+
   # Options ────────────────────────────────────────────────────────────────────
 
   # Snippets directories:
