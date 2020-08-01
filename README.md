@@ -16,7 +16,9 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 
 ## Usage
 
-- <kbd>Alt</kbd> + <kbd>Return</kbd> ⇒ Expand the currently entered snippet (between a matching pair).
+- <kbd>Alt</kbd> + <kbd>Return</kbd> ⇒ Expand the currently entered snippet 
+⚠  For the simplicity of the implementationThe snippet must be inside matching pair:
+`div-class` will not expand but `(div-class)` will
 - <kbd>Alt</kbd> + <kbd>n</kbd> ⇒ Select the next placeholder.
 - <kbd>Alt</kbd> + <kbd>p</kbd> ⇒ Select the previous placeholder.
 
