@@ -193,15 +193,15 @@ provide-module snippets %{
   # Generics ───────────────────────────────────────────────────────────────────
 
   define-command -hidden snippets-replace-text -params 1 %{
-    snippets-paste 'R' %arg{1}
+    snippets-paste-text 'R' %arg{1}
   }
 
   define-command -hidden snippets-insert-text -params 1 %{
-    snippets-paste '<a-P>' %arg{1}
+    snippets-paste-text '<a-P>' %arg{1}
   }
 
   define-command -hidden snippets-append-text -params 1 %{
-    snippets-paste '<a-p>' %arg{1}
+    snippets-paste-text '<a-p>' %arg{1}
   }
 
   define-command -hidden snippets-paste-text -params 2 %{
