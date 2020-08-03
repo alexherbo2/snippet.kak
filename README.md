@@ -2,13 +2,16 @@
 
 Snippets for [Kakoune].
 
+## Features
+
+- Static menu
+- No `sh` call when typing
+
 ## Dependencies
 
 - [prelude.kak]
-- [type-expand.kak]
 
 [prelude.kak]: https://github.com/alexherbo2/prelude.kak
-[type-expand.kak]: https://github.com/alexherbo2/type-expand.kak
 
 ## Installation
 
@@ -16,7 +19,7 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 
 ## Usage
 
-- <kbd>Alt</kbd> + <kbd>Return</kbd> ⇒ Expand the currently entered snippet (between a matching pair).
+- <kbd>Alt</kbd> + <kbd>Return</kbd> ⇒ Menu for snippets.
 - <kbd>Alt</kbd> + <kbd>n</kbd> ⇒ Select the next placeholder.
 - <kbd>Alt</kbd> + <kbd>p</kbd> ⇒ Select the previous placeholder.
 
@@ -24,8 +27,7 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 
 - `snippets-enable`: Enable snippets.
 - `snippets-disable`: Disable snippets.
-- `snippets-expand-selection`: Expand selected snippet.
-- `snippets-list` (`sl`): Visualize snippets in a scratch buffer.
+- `snippets-menu`: Menu for snippets.
 
 ## Options
 
