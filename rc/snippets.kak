@@ -51,47 +51,52 @@ provide-module snippets %{
   # Implementation ─────────────────────────────────────────────────────────────
 
   define-command -hidden snippets-build -docstring 'Build snippets' %{
-    evaluate-commands %sh{
-      # Prelude
-      . "$kak_opt_prelude"
+    # Build the menu asynchronously
+    nop %sh{
+      {
+        # Prelude
+        . "$kak_opt_prelude"
 
-      # Menu
-      menu=$(
-        # Declaration
-        kak_escape_partial menu -select-cmds --
+        # Menu
+        menu=$(
+          # Declaration
+          kak_escape_partial menu -select-cmds --
 
-        # Sort snippets
-        {
-          eval "set -- $kak_quoted_opt_snippets_directories"
-          for directory do
-            find -L "$directory/$kak_opt_filetype" "$directory/global" -type f
+          # Sort snippets
+          {
+            eval "set -- $kak_quoted_opt_snippets_directories"
+            for directory do
+              find -L "$directory/$kak_opt_filetype" "$directory/global" -type f
+            done
+          } | sort |
+          while read snippet_path; do
+            # Paths
+            snippet_directory=${snippet_path%/*}
+            snippet_name=${snippet_path##*/}
+
+            # Content
+            content=$(cat "$snippet_path")
+
+            # Name
+            kak_escape_partial "$snippet_name"
+
+            # Command
+            menu_command=$(
+              kak_escape snippets-insert-implementation "$content"
+            )
+            kak_escape_partial "$menu_command"
+
+            # Information
+            menu_info=$(
+              kak_escape info "$content"
+            )
+            kak_escape_partial "$menu_info"
           done
-        } | sort |
-        while read snippet_path; do
-          # Paths
-          snippet_directory=${snippet_path%/*}
-          snippet_name=${snippet_path##*/}
-
-          # Content
-          content=$(cat "$snippet_path")
-
-          # Name
-          kak_escape_partial "$snippet_name"
-
-          # Command
-          menu_command=$(
-            kak_escape snippets-insert-implementation "$content"
-          )
-          kak_escape_partial "$menu_command"
-
-          # Information
-          menu_info=$(
-            kak_escape info "$content"
-          )
-          kak_escape_partial "$menu_info"
-        done
-      )
-      kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu"
+        )
+        # The menu has been built asynchronously
+        kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" |
+        kak -p "$kak_session"
+      } < /dev/null > /dev/null 2>&1 &
     }
   }
 
