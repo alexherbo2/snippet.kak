@@ -4,7 +4,13 @@ Snippets for [Kakoune].
 
 ## Features
 
+- File-based snippets
+- Support for modes:
+  a mode is just an additional directory with languages in it,
+  and is active when in your `snippets_directories` option.
+- Support for aliases: an alias is just a symlink.
 - Static menu
+- List and preview snippets
 - No `sh` call when typing
 
 ## Dependencies
