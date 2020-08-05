@@ -125,7 +125,7 @@ provide-module snippets %{
           set-register / '\{\{[\w-]*\}\}'
           execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
           evaluate-commands -draft -itersel %{
-            evaluate-commands snippets-replace-text "%%file{%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}}"
+            snippets-replace-from-file "%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}"
           }
         }
       }
@@ -203,6 +203,18 @@ provide-module snippets %{
 
   define-command -hidden snippets-append-text -params 1 %{
     snippets-paste-text '<a-p>' %arg{1}
+  }
+
+  define-command -hidden snippets-replace-from-file -params 1 %{
+    evaluate-commands snippets-replace-text "%%file{%arg{1}}"
+  }
+
+  define-command -hidden snippets-insert-from-file -params 1 %{
+    evaluate-commands snippets-insert-text "%%file{%arg{1}}"
+  }
+
+  define-command -hidden snippets-append-from-file -params 1 %{
+    evaluate-commands snippets-append-text "%%file{%arg{1}}"
   }
 
   define-command -hidden snippets-paste-text -params 2 %{
