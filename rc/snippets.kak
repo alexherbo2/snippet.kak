@@ -24,6 +24,13 @@ provide-module snippets %{
   # 	{body}
   # end
   declare-option -docstring 'Regex to select snippet placeholders' str snippets_placeholder '\{[\w-]*\}'
+  # Cache
+  declare-option -docstring 'Path to snippets cache' str snippets_cache_path %sh{
+    # Environment variables
+    XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
+    CACHE=$XDG_CACHE_HOME/kak/snippets
+    printf '%s' "$CACHE"
+  }
   # Save registers
   declare-option -hidden str-list snippets_mark_register
   declare-option -hidden str-list snippets_search_register
@@ -56,6 +63,10 @@ provide-module snippets %{
       {
         # Prelude
         . "$kak_opt_prelude"
+
+        # Cache
+        cache_path=$kak_opt_snippets_cache_path/$kak_opt_filetype
+        mkdir -p "$cache_path"
 
         # Menu
         menu=$(
@@ -91,6 +102,9 @@ provide-module snippets %{
               kak_escape info "$content"
             )
             kak_escape_partial "$menu_info"
+
+            # Update cache
+            ln -sf "$snippet_path" "$cache_path"
           done
         )
         # The menu has been built asynchronously
@@ -105,6 +119,16 @@ provide-module snippets %{
       # Workaround the smartness of the paste commands by using the replace command.
       execute-keys ';iX<left><esc>'
       snippets-replace-text %arg{1}
+      # Sub-snippets
+      try %{
+        evaluate-commands -draft -save-regs '/' %{
+          set-register / '\{\{[\w-]*\}\}'
+          execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
+          evaluate-commands -draft -itersel %{
+            evaluate-commands snippets-replace-text "%%file{%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}}"
+          }
+        }
+      }
       # Once activated, snippets are active until all placeholders have been consumed.
       try %{
         evaluate-commands %sh{
@@ -187,6 +211,10 @@ provide-module snippets %{
       # The command (R, <a-P> and <a-p>) selects inserted text
       set-register '"' %arg{2}
       execute-keys %arg{1}
+      # Remove EOF newline
+      try %{
+        execute-keys -draft 's\n\z<ret>d'
+      }
       # Replace leading tabs with the appropriate indent
       try %{
         evaluate-commands %sh{
