@@ -61,9 +61,13 @@ provide-module snippets %{
     evaluate-commands "snippets-%opt{filetype}-menu"
   }
 
+  define-command snippets-insert -params 1.. -shell-script-candidates %opt{snippets_completion} -docstring 'Insert snippets' %{
+    snippets-implement "%arg{@}"
+  }
+
   # Implementation ─────────────────────────────────────────────────────────────
 
-  define-command -hidden snippets-build -docstring 'Build snippets' %{
+  define-command -hidden snippets-build %{
     # Build the menu and completion asynchronously
     nop %sh{
       {
@@ -104,7 +108,7 @@ provide-module snippets %{
 
             # Command
             menu_command=$(
-              kak_escape snippets-insert "$content"
+              kak_escape snippets-implement "$content"
             )
             kak_escape_partial "$menu_command"
 
@@ -119,7 +123,7 @@ provide-module snippets %{
           done
         )
         # The menu has been built asynchronously
-        kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" |
+        kak_escape define-command -hidden -override "snippets-${kak_opt_filetype}-menu" "$menu" |
         kak -p "$kak_session"
 
         # Completion
@@ -138,11 +142,11 @@ provide-module snippets %{
     }
   }
 
-  define-command snippets-insert -params .. -shell-script-candidates %opt{snippets_completion} -docstring 'Insert snippets' %{
+  define-command -hidden snippets-implement -params 1 %{
     evaluate-commands -draft %{
       # Workaround the smartness of the paste commands by using the replace command.
       execute-keys ';iX<left><esc>'
-      snippets-replace-text "%arg{@}"
+      snippets-replace-text %arg{1}
       # Sub-snippets
       try %{
         evaluate-commands -draft %{
@@ -209,9 +213,9 @@ provide-module snippets %{
     snippets-select-placeholder '<esc>'
   }
 
-  # Belongs to the snippets-insert command.
+  # Belongs to the snippets-implement command.
   # The command is executed from a mapping in insert mode.
-  # We reuse the mark and search registers set by snippets-insert.
+  # We reuse the mark and search registers set by snippets-implement.
   define-command -hidden snippets-select-placeholder -params 1 %{
     try %{
       # Test if saved regions contain a placeholder before modifying selections
