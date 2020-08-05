@@ -193,6 +193,7 @@ provide-module snippets %{
 
   # Generics ───────────────────────────────────────────────────────────────────
 
+  # Commands to insert text
   define-command -hidden snippets-replace-text -params 1 %{
     snippets-paste-text 'R' %arg{1}
   }
@@ -205,6 +206,7 @@ provide-module snippets %{
     snippets-paste-text '<a-p>' %arg{1}
   }
 
+  # Commands to insert text from file
   define-command -hidden snippets-replace-from-file -params 1 %{
     evaluate-commands snippets-replace-text "%%file{%arg{1}}"
   }
@@ -217,6 +219,7 @@ provide-module snippets %{
     evaluate-commands snippets-append-text "%%file{%arg{1}}"
   }
 
+  # Command implementation
   define-command -hidden snippets-paste-text -params 2 %{
     evaluate-commands -save-regs '"' %{
       # Paste using the specified method
