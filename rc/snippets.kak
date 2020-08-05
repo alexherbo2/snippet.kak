@@ -31,6 +31,12 @@ provide-module snippets %{
     CACHE=$XDG_CACHE_HOME/kak/snippets
     printf '%s' "$CACHE"
   }
+  # Completion
+  declare-option -hidden str-list snippets_candidates
+  declare-option -hidden str snippets_completion %{
+    eval "set -- $kak_quoted_opt_snippets_candidates"
+    printf '%s\n' "$@"
+  }
   # Save registers
   declare-option -hidden str-list snippets_mark_register
   declare-option -hidden str-list snippets_search_register
@@ -58,7 +64,7 @@ provide-module snippets %{
   # Implementation ─────────────────────────────────────────────────────────────
 
   define-command -hidden snippets-build -docstring 'Build snippets' %{
-    # Build the menu asynchronously
+    # Build the menu and completion asynchronously
     nop %sh{
       {
         # Prelude
@@ -115,15 +121,28 @@ provide-module snippets %{
         # The menu has been built asynchronously
         kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" |
         kak -p "$kak_session"
+
+        # Completion
+        {
+          kak_escape_partial set-option "buffer=$kak_bufname" snippets_candidates
+          find -L "$cache_path" -type f | sort |
+          while read snippet_path; do
+            # Paths
+            snippet_name=${snippet_path##*/}
+
+            kak_escape_partial "{{$snippet_name}}"
+          done
+        } |
+        kak -p "$kak_session"
       } < /dev/null > /dev/null 2>&1 &
     }
   }
 
-  define-command -hidden snippets-insert -params 1 %{
+  define-command snippets-insert -params .. -shell-script-candidates %opt{snippets_completion} -docstring 'Insert snippets' %{
     evaluate-commands -draft %{
       # Workaround the smartness of the paste commands by using the replace command.
       execute-keys ';iX<left><esc>'
-      snippets-replace-text %arg{1}
+      snippets-replace-text "%arg{@}"
       # Sub-snippets
       try %{
         evaluate-commands -draft %{

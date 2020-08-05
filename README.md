@@ -35,6 +35,7 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 - `snippets-enable`: Enable snippets.
 - `snippets-disable`: Disable snippets.
 - `snippets-menu`: Menu for snippets.
+- `snippets-insert`: Insert snippets.
 
 ## Options
 
