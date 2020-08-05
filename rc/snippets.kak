@@ -185,9 +185,9 @@ provide-module snippets %{
     snippets-select-placeholder '<esc>'
   }
 
-  # Belongs to the snippets-paste command.
+  # Belongs to the snippets-insert command.
   # The command is executed from a mapping in insert mode.
-  # We reuse the mark and search registers set by snippets-paste.
+  # We reuse the mark and search registers set by snippets-insert.
   define-command -hidden snippets-select-placeholder -params 1 %{
     try %{
       # Test if saved regions contain a placeholder before modifying selections
