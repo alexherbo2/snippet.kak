@@ -93,7 +93,7 @@ provide-module snippets %{
 
             # Command
             menu_command=$(
-              kak_escape snippets-insert-implementation "$content"
+              kak_escape snippets-insert "$content"
             )
             kak_escape_partial "$menu_command"
 
@@ -114,7 +114,7 @@ provide-module snippets %{
     }
   }
 
-  define-command -hidden snippets-insert-implementation -params 1 %{
+  define-command -hidden snippets-insert -params 1 %{
     evaluate-commands -draft %{
       # Workaround the smartness of the paste commands by using the replace command.
       execute-keys ';iX<left><esc>'
