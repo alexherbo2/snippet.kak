@@ -64,6 +64,11 @@ provide-module snippets %{
         # Prelude
         . "$kak_opt_prelude"
 
+        # Abort if no filetype
+        if test -z "$kak_opt_filetype"; then
+          exit 1
+        fi
+
         # Cache
         cache_path=$kak_opt_snippets_cache_path/$kak_opt_filetype
         mkdir -p "$cache_path"
