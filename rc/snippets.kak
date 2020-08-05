@@ -121,12 +121,8 @@ provide-module snippets %{
       snippets-replace-text %arg{1}
       # Sub-snippets
       try %{
-        evaluate-commands -draft -save-regs '/' %{
-          set-register / '\{\{[\w-]*\}\}'
-          execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
-          evaluate-commands -draft -itersel %{
-            snippets-replace-from-file "%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}"
-          }
+        evaluate-commands -draft %{
+          snippets-search-and-expand
         }
       }
       # Once activated, snippets are active until all placeholders have been consumed.
@@ -167,6 +163,18 @@ provide-module snippets %{
         }
       }
     }
+  }
+
+  # Recursively search and expand snippets
+  define-command -hidden snippets-search-and-expand %{
+    evaluate-commands -save-regs '/' %{
+      set-register / '\{\{[\w-]*\}\}'
+      execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
+      evaluate-commands -itersel %{
+        snippets-replace-from-file "%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}"
+      }
+    }
+    snippets-search-and-expand
   }
 
   define-command -hidden snippets-select-next-placeholder %{

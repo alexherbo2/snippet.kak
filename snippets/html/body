@@ -1,3 +1,5 @@
 <body>
-	{body}
+	{{header}}
+	{{main}}
+	{{footer}}
 </body>
