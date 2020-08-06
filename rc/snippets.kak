@@ -31,12 +31,6 @@ provide-module snippets %{
     CACHE=$XDG_CACHE_HOME/kak/snippets
     printf '%s' "$CACHE"
   }
-  # Completion
-  declare-option -hidden str-list snippets_candidates
-  declare-option -hidden str snippets_completion %{
-    eval "set -- $kak_quoted_opt_snippets_candidates"
-    printf '%s\n' "$@"
-  }
   # Save registers
   declare-option -hidden str-list snippets_mark_register
   declare-option -hidden str-list snippets_search_register
@@ -57,18 +51,10 @@ provide-module snippets %{
     remove-hooks global snippets-build
   }
 
-  define-command snippets-menu -docstring 'Menu for snippets' %{
-    evaluate-commands "snippets-%opt{filetype}-menu"
-  }
-
-  define-command snippets-insert -params 1.. -shell-script-candidates %opt{snippets_completion} -docstring 'Insert snippets' %{
-    snippets-implement "%arg{@}"
-  }
-
   # Implementation ─────────────────────────────────────────────────────────────
 
   define-command -hidden snippets-build %{
-    # Build the menu and completion asynchronously
+    # Build the menu and insert commands asynchronously
     nop %sh{
       {
         # Prelude
@@ -83,7 +69,7 @@ provide-module snippets %{
         cache_path=$kak_opt_snippets_cache_path/$kak_opt_filetype
         mkdir -p "$cache_path"
 
-        # Menu
+        # Menu command
         menu=$(
           # Declaration
           kak_escape_partial menu -select-cmds --
@@ -108,7 +94,7 @@ provide-module snippets %{
 
             # Command
             menu_command=$(
-              kak_escape snippets-implement "$content"
+              kak_escape snippets-implement "$cache_path" "$content"
             )
             kak_escape_partial "$menu_command"
 
@@ -123,34 +109,48 @@ provide-module snippets %{
           done
         )
         # The menu has been built asynchronously
-        kak_escape define-command -hidden -override "snippets-${kak_opt_filetype}-menu" "$menu" |
+        kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" -docstring "Menu for $kak_opt_filetype snippets" |
         kak -p "$kak_session"
 
-        # Completion
-        {
-          kak_escape_partial set-option "buffer=$kak_bufname" snippets_candidates
+        # Insert command
+        body=$(
+          kak_escape_partial snippets-implement "$cache_path"
+          printf '%%arg{@}'
+        )
+        candidates=$(
           find -L "$cache_path" -type f | sort |
           while read snippet_path; do
             # Paths
             snippet_name=${snippet_path##*/}
 
-            kak_escape_partial "{{$snippet_name}}"
+            printf '%s\n' "{{$snippet_name}}"
           done
+        )
+        shell_script_completion="
+          printf '%s' \"$candidates\"
+        "
+        kak_escape define-command -override "snippets-${kak_opt_filetype}-insert" -params 1.. -shell-script-candidates "$shell_script_completion" "$body" -docstring "Insert $kak_opt_filetype snippets" |
+        kak -p "$kak_session"
+
+        # Export
+        {
+          kak_escape alias "buffer=$kak_bufname" snippets-menu "snippets-${kak_opt_filetype}-menu"
+          kak_escape alias "buffer=$kak_bufname" snippets-insert "snippets-${kak_opt_filetype}-insert"
         } |
         kak -p "$kak_session"
       } < /dev/null > /dev/null 2>&1 &
     }
   }
 
-  define-command -hidden snippets-implement -params 1 %{
+  define-command -hidden snippets-implement -params 2 %{
     evaluate-commands -draft %{
       # Workaround the smartness of the paste commands by using the replace command.
       execute-keys ';iX<left><esc>'
-      snippets-replace-text %arg{1}
+      snippets-replace-text %arg{2}
       # Sub-snippets
       try %{
         evaluate-commands -draft %{
-          snippets-search-and-expand
+          snippets-search-and-expand %arg{1}
         }
       }
       # Once activated, snippets are active until all placeholders have been consumed.
@@ -194,15 +194,15 @@ provide-module snippets %{
   }
 
   # Recursively search and expand snippets
-  define-command -hidden snippets-search-and-expand %{
+  define-command -hidden snippets-search-and-expand -params 1 %{
     evaluate-commands -save-regs '/' %{
       set-register / '\{\{[\w-]*\}\}'
       execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
       evaluate-commands -itersel %{
-        snippets-replace-from-file "%opt{snippets_cache_path}/%opt{filetype}/%val{main_reg_dot}"
+        snippets-replace-from-file "%arg{1}/%val{main_reg_dot}"
       }
     }
-    snippets-search-and-expand
+    snippets-search-and-expand %arg{1}
   }
 
   define-command -hidden snippets-select-next-placeholder %{
