@@ -69,18 +69,23 @@ provide-module snippets %{
         cache_path=$kak_opt_snippets_cache_path/$kak_opt_filetype
         mkdir -p "$cache_path"
 
+        # Save the path of snippets in a text file.
+        snippet_paths=$cache_path.txt
+        eval "set -- $kak_quoted_opt_snippets_directories"
+        for directory do
+          find -L "$directory/$kak_opt_filetype" "$directory/global" -type f
+        done |
+        sort > "$snippet_paths"
+
+        # Update cache
+        while read snippet_path; do
+          ln -sf "$snippet_path" "$cache_path"
+        done < "$snippet_paths"
+
         # Menu command
         menu=$(
-          # Declaration
           kak_escape_partial menu -select-cmds --
 
-          # Sort snippets
-          {
-            eval "set -- $kak_quoted_opt_snippets_directories"
-            for directory do
-              find -L "$directory/$kak_opt_filetype" "$directory/global" -type f
-            done
-          } | sort |
           while read snippet_path; do
             # Paths
             snippet_directory=${snippet_path%/*}
@@ -103,10 +108,7 @@ provide-module snippets %{
               kak_escape info "$content"
             )
             kak_escape_partial "$menu_info"
-
-            # Update cache
-            ln -sf "$snippet_path" "$cache_path"
-          done
+          done < "$snippet_paths"
         )
         # The menu has been built asynchronously
         kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" -docstring "Menu for $kak_opt_filetype snippets" |
@@ -118,13 +120,12 @@ provide-module snippets %{
           printf '%%arg{@}'
         )
         candidates=$(
-          find -L "$cache_path" -type f | sort |
           while read snippet_path; do
             # Paths
             snippet_name=${snippet_path##*/}
 
             printf '%s\n' "{{$snippet_name}}"
-          done
+          done < "$snippet_paths"
         )
         shell_script_completion="
           printf '%s' \"$candidates\"
