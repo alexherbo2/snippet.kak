@@ -44,6 +44,9 @@ provide-module snippets %{
     hook -group snippets-build global WinSetOption filetype=.* %{
       snippets-build
     }
+    hook -group snippets-build global WinSetOption snippets_directories=.* %{
+      snippets-build
+    }
   }
 
   define-command snippets-disable -docstring 'Disable snippets' %{
