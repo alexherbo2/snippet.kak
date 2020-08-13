@@ -40,7 +40,6 @@ Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 ## Options
 
 - `snippets_directories`: List of snippets directories.  Default: `~/.config/kak/snippets` `/path/to/snippets.kak/snippets`.
-- `snippets_placeholder`: Regex to select snippet placeholders.  Default: `\{[\w-]*\}`.
 - `snippets_cache_path`: Path to snippets cache.  Default: `$XDG_CACHE_HOME/kak/snippets` or `~/.cache/kak/snippets`.
 
 [Kakoune]: https://kakoune.org

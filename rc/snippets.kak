@@ -19,11 +19,6 @@ provide-module snippets %{
   # – ~/.config/kak/snippets
   # – /path/to/snippets.kak/snippets
   declare-option -docstring 'List of snippets directories' str-list snippets_directories "%val{config}/snippets" %opt{snippets_path}
-  # Regex placeholder:
-  # def {name}
-  # 	{body}
-  # end
-  declare-option -docstring 'Regex to select snippet placeholders' str snippets_placeholder '\{[\w-]*\}'
   # Cache
   declare-option -docstring 'Path to snippets cache' str snippets_cache_path %sh{
     # Environment variables
@@ -158,6 +153,12 @@ provide-module snippets %{
         }
       }
       # Once activated, snippets are active until all placeholders have been consumed.
+      #
+      # Example:
+      #
+      # def {name}
+      # 	{body}
+      # end
       try %{
         evaluate-commands %sh{
           if test "$kak_opt_snippets_active" = true; then
@@ -170,7 +171,7 @@ provide-module snippets %{
         set-option window snippets_search_register %reg{/}
         # Save regions and set the search register for selecting placeholders
         execute-keys -save-regs '' Z
-        set-register / %opt{snippets_placeholder}
+        set-register / '\{[\w-]*\}'
         # Mappings for the whole insert session
         map window insert <a-n> '<a-;>: snippets-select-next-placeholder<ret>' -docstring 'Select the next placeholder'
         map window insert <a-p> '<a-;>: snippets-select-previous-placeholder<ret>' -docstring 'Select the previous placeholder'
