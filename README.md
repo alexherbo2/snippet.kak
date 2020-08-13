@@ -5,7 +5,8 @@ Snippets for [Kakoune].
 ## Features
 
 - File-based snippets
-- Support for sub-snippets: `{{snippet-name}}` in a snippet file.
+- Support for placeholders: `{placeholder}`
+- Support for sub-snippets: `{{snippet-name}}`
 - Support for modes:
   a mode is just an additional directory with languages in it,
   and is active when in your `snippets_directories` option.
