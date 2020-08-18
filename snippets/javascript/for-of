@@ -1,3 +1,0 @@
-for ({variable} of {object}) {
-	{body}
-}

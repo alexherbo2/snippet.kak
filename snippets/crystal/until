@@ -1,3 +1,0 @@
-until {condition}
-	{body}
-end

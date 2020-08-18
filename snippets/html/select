@@ -1,3 +1,0 @@
-<select name="{name}" id="{id}">
-	<option value="{value}">{body}</option>
-</select>

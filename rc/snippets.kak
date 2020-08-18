@@ -1,7 +1,5 @@
-# Snippets paths
-declare-option -hidden str snippets_plugin_path %sh(dirname "$kak_source")
-declare-option -hidden str snippets_root_path %sh(dirname "$kak_opt_snippets_plugin_path")
-declare-option -hidden str snippets_path "%opt{snippets_root_path}/snippets"
+# Scope
+declare-option -docstring 'Scope' str-list scope
 
 hook global ModuleLoaded snippets %{
   snippets-enable
@@ -9,232 +7,53 @@ hook global ModuleLoaded snippets %{
 
 provide-module snippets %{
 
-  # Modules ────────────────────────────────────────────────────────────────────
-
+  # Modules
   require-module prelude
+  require-module phantom
 
-  # Options ────────────────────────────────────────────────────────────────────
-
-  # Snippets directories:
-  # – ~/.config/kak/snippets
-  # – /path/to/snippets.kak/snippets
-  declare-option -docstring 'List of snippets directories' str-list snippets_directories "%val{config}/snippets" %opt{snippets_path}
-  # Cache
-  declare-option -docstring 'Path to snippets cache' str snippets_cache_path %sh{
-    # Environment variables
-    XDG_CACHE_HOME=${XDG_CACHE_HOME:-~/.cache}
-    CACHE=$XDG_CACHE_HOME/kak/snippets
-    printf '%s' "$CACHE"
-  }
-  # Save registers
-  declare-option -hidden str-list snippets_mark_register
-  declare-option -hidden str-list snippets_search_register
-  # Determines whether snippets are active
-  declare-option -hidden bool snippets_active
-
-  # Commands ───────────────────────────────────────────────────────────────────
-
+  # Commands
   define-command snippets-enable -docstring 'Enable snippets' %{
-    map global insert <a-ret> '<a-;>: snippets-menu<ret>/' -docstring 'Menu for snippets'
-    hook -group snippets-build global WinSetOption filetype=.* %{
-      snippets-build
-    }
-    hook -group snippets-build global WinSetOption snippets_directories=.* %{
-      snippets-build
-    }
+    map global insert <a-ret> '<a-;>: snippets-menu<ret>/'
   }
 
   define-command snippets-disable -docstring 'Disable snippets' %{
     unmap global insert <a-ret>
-    remove-hooks global snippets-build
   }
 
-  # Implementation ─────────────────────────────────────────────────────────────
+  # Main interface to insert snippets
+  define-command snippets-menu -docstring 'Menu for snippets' %{
+    evaluate-commands %sh{
+      # Prelude
+      . "$kak_opt_prelude_path"
 
-  define-command -hidden snippets-build %{
-    # Build the menu and insert commands asynchronously
-    nop %sh{
-      {
-        # Prelude
-        . "$kak_opt_prelude"
+      sh_quoted_snippets_as_tuples=$(snippets get snippets global "$kak_opt_filetype" $kak_opt_scope | jq --sort-keys | jq --raw-output '[.[] | .name, .content] | @sh')
 
-        # Abort if no filetype
-        if test -z "$kak_opt_filetype"; then
-          exit 1
-        fi
+      eval "set -- $sh_quoted_snippets_as_tuples"
 
-        # Cache
-        cache_path=$kak_opt_snippets_cache_path/$kak_opt_filetype
-        mkdir -p "$cache_path"
+      kak_escape_partial menu -select-cmds --
+      while [ "$2" ]; do
+        name=$1
+        content=$2
+        shift 2
 
-        # Save the path of snippets in a text file.
-        snippet_paths=$cache_path.txt
-        eval "set -- $kak_quoted_opt_snippets_directories"
-        for directory do
-          find -L "$directory/$kak_opt_filetype" "$directory/global" -type f
-        done |
-        sort > "$snippet_paths"
-
-        # Update cache
-        while read snippet_path; do
-          ln -sf "$snippet_path" "$cache_path"
-        done < "$snippet_paths"
-
-        # Menu command
-        menu=$(
-          kak_escape_partial menu -select-cmds --
-
-          while read snippet_path; do
-            # Paths
-            snippet_directory=${snippet_path%/*}
-            snippet_name=${snippet_path##*/}
-
-            # Content
-            content=$(cat "$snippet_path")
-
-            # Name
-            kak_escape_partial "$snippet_name"
-
-            # Command
-            menu_command=$(
-              kak_escape snippets-implement "$cache_path" "$content"
-            )
-            kak_escape_partial "$menu_command"
-
-            # Information
-            menu_info=$(
-              kak_escape info "$content"
-            )
-            kak_escape_partial "$menu_info"
-          done < "$snippet_paths"
-        )
-        # The menu has been built asynchronously
-        kak_escape define-command -override "snippets-${kak_opt_filetype}-menu" "$menu" -docstring "Menu for $kak_opt_filetype snippets" |
-        kak -p "$kak_session"
-
-        # Insert command
-        body=$(
-          kak_escape_partial snippets-implement "$cache_path"
-          printf '%%arg{@}'
-        )
-        candidates=$(
-          while read snippet_path; do
-            # Paths
-            snippet_name=${snippet_path##*/}
-
-            printf '%s\n' "{{$snippet_name}}"
-          done < "$snippet_paths"
-        )
-        shell_script_completion="
-          printf '%s' \"$candidates\"
-        "
-        kak_escape define-command -override "snippets-${kak_opt_filetype}-insert" -params 1.. -shell-script-candidates "$shell_script_completion" "$body" -docstring "Insert $kak_opt_filetype snippets" |
-        kak -p "$kak_session"
-
-        # Export
-        {
-          kak_escape alias "buffer=$kak_bufname" snippets-menu "snippets-${kak_opt_filetype}-menu"
-          kak_escape alias "buffer=$kak_bufname" snippets-insert "snippets-${kak_opt_filetype}-insert"
-        } |
-        kak -p "$kak_session"
-      } < /dev/null > /dev/null 2>&1 &
+        kak_escape_partial "$name" "$(kak_escape snippets-insert "$content")" "$(kak_escape info "$content")"
+      done
     }
   }
 
-  define-command -hidden snippets-implement -params 2 %{
-    evaluate-commands -draft %{
-      # Workaround the smartness of the paste commands by using the replace command.
-      execute-keys ';iX<left><esc>'
-      snippets-replace-text %arg{2}
-      # Sub-snippets
-      try %{
-        evaluate-commands -draft %{
-          snippets-search-and-expand %arg{1}
-        }
-      }
-      # Once activated, snippets are active until all placeholders have been consumed.
-      #
-      # Example:
-      #
-      # def {name}
-      # 	{body}
-      # end
-      try %{
-        evaluate-commands %sh{
-          if test "$kak_opt_snippets_active" = true; then
-            printf fail
-          fi
-        }
-        set-option window snippets_active true
-        # Save registers
-        set-option window snippets_mark_register %reg{^}
-        set-option window snippets_search_register %reg{/}
-        # Save regions and set the search register for selecting placeholders
-        execute-keys -save-regs '' Z
-        set-register / '\{[\w-]*\}'
-        # Mappings for the whole insert session
-        map window insert <a-n> '<a-;>: snippets-select-next-placeholder<ret>' -docstring 'Select the next placeholder'
-        map window insert <a-p> '<a-;>: snippets-select-previous-placeholder<ret>' -docstring 'Select the previous placeholder'
-        # Deactivate when no placeholder remains in saved regions.
-        # Test when leaving insert mode.
-        hook -group snippets-active window ModeChange pop:insert:normal %{
-          try %{
-            # Test if a placeholder matches in saved regions
-            execute-keys -draft 'z<a-k><ret>'
-          } catch %{
-            # If not:
-            # Restore registers
-            set-register ^ %opt{snippets_mark_register}
-            set-register / %opt{snippets_search_register}
-            # Unmap
-            unmap window insert <a-n>
-            unmap window insert <a-p>
-            # Deactivate
-            unset-option window snippets_active
-            remove-hooks window snippets-active
-          }
-        }
-      }
-    }
-  }
-
-  # Recursively search and expand snippets
-  define-command -hidden snippets-search-and-expand -params 1 %{
-    evaluate-commands -save-regs '/' %{
-      set-register / '\{\{[\w-]*\}\}'
-      execute-keys 's<ret>i<del><del><esc>a<backspace><backspace><esc>'
-      evaluate-commands -itersel %{
-        snippets-replace-from-file "%arg{1}/%val{main_reg_dot}"
-      }
-    }
-    snippets-search-and-expand %arg{1}
-  }
-
-  define-command -hidden snippets-select-next-placeholder %{
-    snippets-select-placeholder ')'
-  }
-
-  define-command -hidden snippets-select-previous-placeholder %{
-    snippets-select-placeholder '<esc>'
-  }
-
-  # Belongs to the snippets-implement command.
-  # The command is executed from a mapping in insert mode.
-  # We reuse the mark and search registers set by snippets-implement.
-  define-command -hidden snippets-select-placeholder -params 1 %{
+  # Insert text with proper indentation and quickly jump to the next placeholder with phantom.kak.
+  define-command -hidden snippets-insert -params 1 %{
     try %{
-      # Test if saved regions contain a placeholder before modifying selections
-      execute-keys -draft 'z<a-k><ret>'
-      execute-keys '<a-;>z'
-      evaluate-commands -itersel %{
-        execute-keys "<a-;>s<ret><a-;>%arg{1}<a-;><space><a-;>d"
+      evaluate-commands -draft %{
+        snippets-insert-text %arg{1}
+        set-register / '\{\{.*?\}\}'
+        execute-keys 's<ret>d'
+        phantom-save
       }
     }
   }
 
-  # Generics ───────────────────────────────────────────────────────────────────
-
-  # Commands to insert text
+  # Generics to insert text with proper indentation.
   define-command -hidden snippets-replace-text -params 1 %{
     snippets-paste-text 'R' %arg{1}
   }
@@ -247,31 +66,14 @@ provide-module snippets %{
     snippets-paste-text '<a-p>' %arg{1}
   }
 
-  # Commands to insert text from file
-  define-command -hidden snippets-replace-from-file -params 1 %{
-    evaluate-commands snippets-replace-text "%%file{%arg{1}}"
-  }
-
-  define-command -hidden snippets-insert-from-file -params 1 %{
-    evaluate-commands snippets-insert-text "%%file{%arg{1}}"
-  }
-
-  define-command -hidden snippets-append-from-file -params 1 %{
-    evaluate-commands snippets-append-text "%%file{%arg{1}}"
-  }
-
-  # Command implementation
   define-command -hidden snippets-paste-text -params 2 %{
     evaluate-commands -save-regs '"' %{
-      # Paste using the specified method
-      # The command (R, <a-P> and <a-p>) selects inserted text
+      # Paste using the specified method.
+      # The command (R, <a-P> and <a-p>) selects inserted text.
       set-register '"' %arg{2}
       execute-keys %arg{1}
-      # Remove EOF newline
-      try %{
-        execute-keys -draft 's\n\z<ret>d'
-      }
-      # Replace leading tabs with the appropriate indent
+
+      # Replace leading tabs with the appropriate indent.
       try %{
         evaluate-commands %sh{
           if test "$kak_opt_indentwidth" -eq 0; then
@@ -280,7 +82,8 @@ provide-module snippets %{
         }
         execute-keys -draft "<a-s>s\A\t+<ret>s.<ret>%opt{indentwidth}@"
       }
-      # Align everything with the current line
+
+      # Align everything with the current line.
       evaluate-commands -draft -itersel %{
         try %{
           execute-keys '<a-s>Z)<space><a-x>s^\h+<ret>yz)<a-space>_P'

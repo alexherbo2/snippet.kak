@@ -1,3 +1,0 @@
-hook -group {group} {scope} {name} {filter} %{
-	{body}
-}

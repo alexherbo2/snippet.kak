@@ -1,6 +1,0 @@
-case {object}
-when {condition}
-	{body}
-else
-	{body}
-end

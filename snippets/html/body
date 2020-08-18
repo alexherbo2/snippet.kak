@@ -1,5 +1,0 @@
-<body>
-	{{header}}
-	{{main}}
-	{{footer}}
-</body>

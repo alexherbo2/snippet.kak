@@ -1,3 +1,0 @@
-hook -always -once window {name} {filter} %{
-	{body}
-}

@@ -1,3 +1,0 @@
-for {variable} in {elements}; do
-	{body}
-done

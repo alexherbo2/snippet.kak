@@ -1,5 +1,0 @@
-begin
-	{body}
-rescue {exception}
-	{body}
-end

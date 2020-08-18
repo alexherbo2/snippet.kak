@@ -1,3 +1,0 @@
-for ({initial-expression}; {condition}; {increment-expression}) {
-	{body}
-}

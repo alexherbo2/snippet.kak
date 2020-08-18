@@ -1,3 +1,0 @@
-do |{params}|
-	{body}
-end
