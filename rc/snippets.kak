@@ -1,6 +1,3 @@
-# Scope
-declare-option -docstring 'Scope' str-list scope
-
 hook global ModuleLoaded snippets %{
   snippets-enable
 }
@@ -10,6 +7,9 @@ provide-module snippets %{
   # Modules
   require-module prelude
   require-module phantom
+
+  # Buffer scope
+  declare-option -docstring 'Buffer scope' str-list snippets_scope
 
   # Commands
   define-command snippets-enable -docstring 'Enable snippets' %{
@@ -26,7 +26,7 @@ provide-module snippets %{
       # Prelude
       . "$kak_opt_prelude_path"
 
-      sh_quoted_snippets_as_tuples=$(snippets get snippets global "$kak_opt_filetype" $kak_opt_scope | jq --sort-keys | jq --raw-output '[.[] | .name, .content] | @sh')
+      sh_quoted_snippets_as_tuples=$(snippets get snippets global "$kak_opt_filetype" $kak_opt_snippets_scope | jq --sort-keys | jq --raw-output '[.[] | .name, .content] | @sh')
 
       eval "set -- $sh_quoted_snippets_as_tuples"
 
