@@ -53,6 +53,16 @@ provide-module snippets %{
     }
   }
 
+  # Utility command to add a scope for a matching path
+  # snippets-add-scope <option-scope> <snippets-scope> <buffer-path>
+  define-command -hidden snippets-add-scope -params 3 %{
+    hook -always -once window User "snippets-buffer-path=%arg{3}" "
+      set-option -add %arg{1} snippets_scope %arg{2}
+    "
+
+    trigger-user-hook "snippets-buffer-path=%val{buffile}"
+  }
+
   # Generics to insert text with proper indentation.
   define-command -hidden snippets-replace-text -params 1 %{
     snippets-paste-text 'R' %arg{1}

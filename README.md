@@ -16,7 +16,7 @@
 
 ## Installation
 
-Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
+Add [`rc`](rc) to your autoload or source [`snippets.kak`](rc/snippets.kak) and its [modules](rc/modules) manually.
 
 ## Usage
 
