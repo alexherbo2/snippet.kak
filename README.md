@@ -32,5 +32,5 @@ You can quickly jump to the next placeholder with [phantom.kak].
 require-module snippets-crystal
 
 # Options
-set-option global snippets_scope global/emoji
+set-option global snippets_scope global
 ```
