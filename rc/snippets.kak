@@ -47,7 +47,7 @@ provide-module snippets %{
       evaluate-commands -draft %{
         snippets-insert-text %arg{1}
         set-register / '\{\{.*?\}\}'
-        execute-keys 's<ret>d'
+        execute-keys 's<ret>'
         phantom-save
       }
     }
