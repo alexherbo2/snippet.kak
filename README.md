@@ -22,3 +22,15 @@ Add [`rc`](rc) to your autoload or source [`snippets.kak`](rc/snippets.kak) and 
 
 Press <kbd>Alt</kbd> + <kbd>Enter</kbd> to insert a snippet.
 You can quickly jump to the next placeholder with [phantom.kak].
+
+## Configuration
+
+**Example**
+
+``` kak
+# Modules
+require-module snippets-crystal
+
+# Options
+set-option global snippets_scope emoji
+```
