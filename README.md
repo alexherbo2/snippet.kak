@@ -37,5 +37,6 @@ require-module snippets-crystal
 set-option global snippets_scope global
 
 # Mappings
+# Optional auto-pairs integration.
 map global insert <ret> '<a-;>: snippets-enter auto-pairs-insert-new-line<ret>'
 ```
