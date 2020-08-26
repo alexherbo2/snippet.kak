@@ -96,9 +96,12 @@ provide-module snippets %{
           # Prelude
           . "$kak_opt_prelude_path"
 
+          # Snippets arguments
+          eval "set -- $kak_quoted_opt_filetype $kak_quoted_opt_snippets_scope $kak_quoted_main_reg_dot"
+
           # Try to get the content of the selected snippet
           content=$(
-            snippets get snippet -- global "$kak_opt_filetype" "$kak_opt_snippets_scope" "$kak_main_reg_dot" |
+            snippets get snippet -- global "$@" |
             jq --exit-status --join-output .content
           )
 
