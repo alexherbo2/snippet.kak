@@ -85,7 +85,7 @@ provide-module snippets %{
     }
   }
 
-  # Expand selected snippet in the list of completions.
+  # Try to expand a snippet.
   define-command -hidden snippets-try-expand %{
     try %{
       evaluate-commands -draft %{
