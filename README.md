@@ -42,4 +42,9 @@ map global user -docstring 'Edit snippets' / ': snippets-edit<ret>'
 
 # Optional auto-pairs integration.
 map global insert <ret> '<a-;>: snippets-enter auto-pairs-insert-new-line<ret>'
+
+# Indent snippets with tabs
+hook global BufCreate '.+/\.?config/snippets/.+' %{
+  set-option buffer indentwidth 0
+}
 ```
