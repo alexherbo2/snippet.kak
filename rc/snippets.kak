@@ -145,7 +145,7 @@ provide-module snippets %{
   define-command -hidden snippets-build-completions-header -params .. %{
     evaluate-commands -draft %{
       evaluate-commands %arg{@}
-      set-option window snippets_completions_header "%val{cursor_line}.%val{cursor_column}+%val{selection_length}@%val{timestamp}"
+      set-option window snippets_completions_header "%val{cursor_line}.%val{cursor_column}@%val{timestamp}"
     }
   }
 
