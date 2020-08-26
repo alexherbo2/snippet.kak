@@ -47,6 +47,11 @@ provide-module snippets %{
   declare-option -hidden str snippets_content
   declare-option -hidden str-list snippets_saved_completers
 
+  # Create new snippets
+  define-command snippets-edit -docstring 'Edit snippets' %{
+    execute-keys ':edit %sh(snippets get input_paths | jq --raw-output last)<a-!>/%opt{filetype}<a-!>/'
+  }
+
   # Main interface for snippets completions
   #
   # Populate the completion option with appropriate suggestions.
