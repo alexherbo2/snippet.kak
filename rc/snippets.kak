@@ -47,6 +47,17 @@ provide-module snippets %{
   declare-option -hidden str snippets_content
   declare-option -hidden str-list snippets_saved_completers
 
+  # Build snippets
+  define-command snippets-build -docstring 'Build snippets' %{
+    info -title 'snippets build' %sh(snippets build | jq)
+    snippets-build-completions
+  }
+
+  # Build snippets completions
+  define-command snippets-build-completions -docstring 'Build snippets completions' %{
+    snippets-build-completions-body global %opt{filetype} %opt{snippets_scope}
+  }
+
   # Create new snippets
   define-command snippets-edit -docstring 'Edit snippets' %{
     execute-keys ':edit %sh(snippets get input_paths | jq --raw-output last)<a-!>/%opt{filetype}<a-!>/'
