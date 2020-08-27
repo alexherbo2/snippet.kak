@@ -63,6 +63,16 @@ provide-module snippets %{
     execute-keys ':edit %sh(snippets get input_paths | jq --raw-output last)<a-!>/%opt{filetype}<a-!>/'
   }
 
+  # Show snippets
+  define-command snippets-show -docstring 'Show snippets' %{
+    edit! -scratch '*snippets-show*'
+    execute-keys '|snippets show<ret>'
+    evaluate-commands -save-regs '/' %{
+      set-register / %sh(snippets get input_paths | jq --raw-output 'map("\\Q\(.)\\E\\S*") | join("|")')
+      execute-keys 's<ret>'
+    }
+  }
+
   # Main interface for snippets completions
   #
   # Populate the completion option with appropriate suggestions.
