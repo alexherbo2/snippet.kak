@@ -1,6 +1,6 @@
 # snippets.kak
 
-[Snippets] for [Kakoune].
+[Snippets] integration for [Kakoune].
 
 [Snippets]: https://github.com/alexherbo2/snippets
 [Kakoune]: https://kakoune.org
