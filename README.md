@@ -8,9 +8,11 @@
 ## Dependencies
 
 - [Snippets]
+- [jq]
 - [prelude.kak]
 - [phantom.kak]
 
+[jq]: https://stedolan.github.io/jq/
 [prelude.kak]: https://github.com/alexherbo2/prelude.kak
 [phantom.kak]: https://github.com/alexherbo2/phantom.kak
 
