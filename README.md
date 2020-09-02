@@ -18,7 +18,7 @@
 
 ## Installation
 
-Add [`rc`](rc) to your autoload or source [`snippets.kak`](rc/snippets.kak) and its [modules](rc/modules) manually.
+Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 
 ## Usage
 
@@ -32,9 +32,6 @@ You can quickly jump to the next placeholder with [phantom.kak].
 **Example**
 
 ``` kak
-# Modules
-require-module snippets-crystal
-
 # Options
 set-option global snippets_scope global
 

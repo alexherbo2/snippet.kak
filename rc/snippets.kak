@@ -2,7 +2,19 @@
 # – https://zork.net/~st/jottings/Intro_to_Kakoune_completions.html
 # – https://github.com/ul/kak-lsp
 
+# Save the snippets paths
+declare-option -hidden str snippets_root_path %sh(dirname "$kak_source")
+declare-option -hidden str snippets_modules_path "%opt{snippets_root_path}/modules"
+
 hook global ModuleLoaded snippets %{
+  # Modules
+  snippets-require crystal
+  snippets-require eruby
+  snippets-require rails
+  snippets-require ruby
+  snippets-require scss
+
+  # Enable
   snippets-enable
 }
 
@@ -46,6 +58,15 @@ provide-module snippets %{
   declare-option -hidden str snippets_name
   declare-option -hidden str snippets_content
   declare-option -hidden str-list snippets_saved_completers
+
+  # Require modules
+  define-command snippets-require -params 1 -shell-script-candidates %(find "$kak_opt_snippets_modules_path" -type f -name '*.kak' -exec basename '{}' .kak ';') -docstring 'Require snippets module' %{
+    # Handle “Already defined module”
+    try %{
+      source "%opt{snippets_modules_path}/%arg{1}.kak"
+    }
+    require-module "snippets-%arg{1}"
+  }
 
   # Build snippets
   define-command snippets-build -docstring 'Build snippets' %{
