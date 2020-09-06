@@ -20,7 +20,13 @@
 
 Add [`snippets.kak`](rc/snippets.kak) to your autoload or source it manually.
 
+``` kak
+require-module snippets
+```
+
 ## Usage
+
+Enable snippets with `snippets-enable`.
 
 Type `/` to bring the snippets completions,
 select a snippet in the list of completions and press <kbd>Enter</kbd>,
