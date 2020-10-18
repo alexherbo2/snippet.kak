@@ -10,10 +10,12 @@
 - [Snippets]
 - [jq]
 - [prelude.kak]
+- [execute-key.kak]
 - [phantom.kak]
 
 [jq]: https://stedolan.github.io/jq/
 [prelude.kak]: https://github.com/alexherbo2/prelude.kak
+[execute-key.kak]: https://github.com/alexherbo2/execute-key.kak
 [phantom.kak]: https://github.com/alexherbo2/phantom.kak
 
 ## Installation

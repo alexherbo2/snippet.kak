@@ -19,6 +19,7 @@ provide-module snippets %{
 
   # Modules
   require-module prelude
+  require-module execute-key
   require-module phantom
 
   # Buffer scope
@@ -323,27 +324,24 @@ provide-module snippets %{
   }
 
   define-command -hidden snippets-paste-text -params 2 %{
-    evaluate-commands -save-regs '"' %{
-      # Paste using the specified method.
-      # The command (R, <a-P> and <a-p>) selects inserted text.
-      set-register '"' %arg{2}
-      execute-keys %arg{1}
+    # Paste using the specified method.
+    # The command (R, <a-P> and <a-p>) selects inserted text.
+    execute-key %arg{1} %arg{2}
 
-      # Replace leading tabs with the appropriate indent.
-      try %{
-        evaluate-commands %sh{
-          if test "$kak_opt_indentwidth" -eq 0; then
-            printf fail
-          fi
-        }
-        execute-keys -draft "<a-s>s\A\t+<ret>s.<ret>%opt{indentwidth}@"
+    # Replace leading tabs with the appropriate indent.
+    try %{
+      evaluate-commands %sh{
+        if test "$kak_opt_indentwidth" -eq 0; then
+          printf fail
+        fi
       }
+      execute-keys -draft "<a-s>s\A\t+<ret>s.<ret>%opt{indentwidth}@"
+    }
 
-      # Align everything with the current line.
-      evaluate-commands -draft -itersel %{
-        try %{
-          execute-keys '<a-s>Z)<space><a-x>s^\h+<ret>yz)<a-space>_P'
-        }
+    # Align everything with the current line.
+    evaluate-commands -draft -itersel %{
+      try %{
+        execute-keys '<a-s>Z)<space><a-x>s^\h+<ret>yz)<a-space>_P'
       }
     }
   }
