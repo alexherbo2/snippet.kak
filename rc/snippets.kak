@@ -18,7 +18,6 @@ hook global ModuleLoaded snippets %{
 provide-module snippets %{
 
   # Modules
-  require-module prelude
   require-module execute-key
   require-module phantom
 
@@ -129,9 +128,6 @@ provide-module snippets %{
         execute-keys "h<a-t>%opt{snippets_prefix}"
 
         evaluate-commands %sh{
-          # Prelude
-          . "$kak_opt_prelude_path"
-
           # Snippets arguments
           eval "set -- $kak_quoted_opt_filetype $kak_quoted_opt_snippets_scope $kak_quoted_main_reg_dot"
 
@@ -145,8 +141,8 @@ provide-module snippets %{
           [ $? = 0 ] || exit 1
 
           # Remove prefix
-          kak_escape execute-keys -draft 'hd'
-          kak_escape snippets-replace "$content"
+          kcr escape -- execute-keys -draft 'hd'
+          kcr escape -- snippets-replace "$content"
         }
       }
     }
@@ -190,15 +186,12 @@ provide-module snippets %{
   define-command -hidden snippets-build-completions-body -params .. %{
     nop %sh{
       {
-        # Prelude
-        . "$kak_opt_prelude_path"
-
         sh_quoted_snippets_as_tuples=$(snippets get snippets -- "$@" | jq --sort-keys | jq --raw-output '[.[] | .name, .content] | @sh')
 
         eval "set -- $sh_quoted_snippets_as_tuples"
 
         {
-          kak_escape_partial set-option "buffer=$kak_bufname" snippets_completions_body
+          command=$(kcr escape -- set-option "buffer=$kak_bufname" snippets_completions_body)
           while [ "$2" ]; do
             # Tuple
             name=$1
@@ -208,9 +201,9 @@ provide-module snippets %{
             # Memorize the snippet name and content on select.
             # Forget it on InsertCompletionHide.
             select_command=$(
-              kak_escape set-option window snippets_name "$name"
-              kak_escape set-option window snippets_content "$content"
-              kak_escape info "$content"
+              kcr escape -- set-option window snippets_name "$name"
+              kcr escape -- set-option window snippets_content "$content"
+              kcr escape -- info "$content"
             )
 
             # Escape values
@@ -222,8 +215,11 @@ provide-module snippets %{
             select_command=$escaped_select_command
             menu_text=$escaped_name
 
-            kak_escape_partial "$text|$select_command|$menu_text"
+            chunk=$(kcr escape -- "$text|$select_command|$menu_text")
+            command="$command $chunk"
           done
+
+          printf '%s' "$command"
         } | kak -p "$kak_session"
       } < /dev/null > /dev/null 2>&1 &
     }

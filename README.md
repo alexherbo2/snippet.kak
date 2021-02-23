@@ -9,12 +9,12 @@
 
 - [Snippets]
 - [jq]
-- [prelude.kak]
+- [kakoune.cr]
 - [execute-key.kak]
 - [phantom.kak]
 
 [jq]: https://stedolan.github.io/jq/
-[prelude.kak]: https://github.com/alexherbo2/prelude.kak
+[kakoune.cr]: https://github.com/alexherbo2/kakoune.cr
 [execute-key.kak]: https://github.com/alexherbo2/execute-key.kak
 [phantom.kak]: https://github.com/alexherbo2/phantom.kak
 
