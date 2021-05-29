@@ -41,7 +41,7 @@ You can quickly jump to the next placeholder with [phantom.kak].
 
 ``` kak
 # Options
-set-option global snippets_scope global
+set-option global snippets_scope global global/arrows global/bullets global/dashes global/math global/punctuation
 
 # Mappings
 # Create new snippets
